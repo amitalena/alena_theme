@@ -38,7 +38,7 @@ const closedMixin = (theme) => ({
   overflowX: 'hidden',
   width: `calc(${theme.spacing(7)} + 1px)`,
   [theme.breakpoints.up('sm')]: {
-    width: `calc(${theme.spacing(7)} + 1px)`,
+    width: `calc(${theme.spacing(9)} + 1px)`,
   },
 });
 
@@ -62,8 +62,8 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 const DrawerHeader = styled('div')(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
-  justifyContent: 'flex-end',
-  padding: theme.spacing(0, 1),
+  justifyContent: 'space-between',
+
   ...theme.mixins.toolbar,
 }));
 
@@ -73,35 +73,28 @@ const Sidebar = ({ open, handleDrawerClose }) => {
   const [openMenus, setOpenMenus] = useState({});
   const [activeItem, setActiveItem] = useState(null);
 
-  // Toggle submenu while ensuring only one submenu stays open at a time per level
   const handleToggle = (menuName, level) => {
     setOpenMenus((prev) => {
       const newState = { ...prev };
-
-      // Close all at the same level
       Object.keys(newState).forEach((key) => {
         if (key.startsWith(`${level}-`) && key !== `${level}-${menuName}`) {
           newState[key] = false;
         }
       });
 
-      // Toggle the selected menu
       newState[`${level}-${menuName}`] = !newState[`${level}-${menuName}`];
       return newState;
     });
 
-    // Set active item
     setActiveItem(menuName);
   };
 
-  // Function to get appropriate icons based on level
   const getIcon = (level) => {
-    if (level === 0) return <DashboardIcon sx={{ fontSize: '48px' }} />;
+    if (level === 0) return <DashboardIcon sx={{ fontSize: '24px', }} />;
     if (level === 1) return <AdjustOutlined sx={{ fontSize: '20px' }} />;
     return <FiberManualRecordOutlined sx={{ fontSize: '15px' }} />;
   };
 
-  // Recursive function to render menu items with nesting support
   const renderMenuItems = (items, level = 0) => {
     return items.map((item) => {
       const isOpen = openMenus[`${level}-${item.name}`];
@@ -113,17 +106,16 @@ const Sidebar = ({ open, handleDrawerClose }) => {
             {/* Left border indicator */}
             <Box
               sx={{
-                background: isOpen ? '#18842A' : 'inherit',
+                background: isOpen ? '#18842A' : 'none',
                 borderRadius: '50px',
                 height: '32px',
                 width: '5px',
               }}
             />
 
-            {/* Menu Item */}
             <Box
               sx={{
-                background: isActive ? '#E8F9EF' : 'none', // Active background
+                background: isActive ? '#E8F9EF' : 'none',
                 borderRadius: '5px',
                 width: '100%',
               }}
@@ -132,11 +124,11 @@ const Sidebar = ({ open, handleDrawerClose }) => {
                 sx={{
                   justifyContent: open ? 'initial' : 'center',
                   p: 2,
-                  color: isActive ? '#18842A' : 'inherit', // Active text color
+                  color: isActive ? '#18842A' : 'inherit',
                 }}
                 onClick={() => {
                   if (item.route) {
-                    navigate(item.route); // Navigate if route exists
+                    navigate(item.route);
                     setActiveItem(item.name);
                   }
                   if (item.subMenu || item.nestedSubMenu) {
@@ -147,23 +139,27 @@ const Sidebar = ({ open, handleDrawerClose }) => {
                 <ListItemIcon sx={{ justifyContent: 'center', minWidth: 0, mr: open ? 3 : 'auto' }}>
                   {getIcon(level)}
                 </ListItemIcon>
+                {/* Hide text when sidebar is closed */}
                 <ListItemText
                   primary={item.name}
                   sx={{
-                    color: isActive ? '#18842A' : 'inherit',
                     opacity: open ? 1 : 0,
+                    display: open ? 'block' : 'none',
                   }}
                 />
                 {(item.subMenu || item.nestedSubMenu) &&
+                  open &&
                   (isOpen ? <ExpandMore /> : <ChevronRight />)}
               </ListItemButton>
             </Box>
           </ListItem>
 
-          {/* Render Submenu */}
-          {(item.subMenu || item.nestedSubMenu) && (
+          {/* Render Submenu only when sidebar is open */}
+          {(item.subMenu || item.nestedSubMenu) && open && (
             <Collapse in={isOpen} timeout="auto" unmountOnExit>
-              <List component="div" disablePadding>{renderMenuItems(item.subMenu || item.nestedSubMenu, level + 1)}</List>
+              <List component="div" disablePadding>
+                {renderMenuItems(item.subMenu || item.nestedSubMenu, level + 1)}
+              </List>
             </Collapse>
           )}
         </React.Fragment>
@@ -174,8 +170,8 @@ const Sidebar = ({ open, handleDrawerClose }) => {
   return (
     <Drawer variant="permanent" open={open}>
       <DrawerHeader>
-        <Avatar src={Logo} variant="square" sx={{ height: '56px', ml: 1, width: '94%' }} />
-        <IconButton onClick={handleDrawerClose}>
+        {open && <Avatar src={Logo} variant="square" sx={{ height: '56px', width: '80%' }} />}
+        <IconButton variant="none" onClick={handleDrawerClose} sx={{ '&:hover': { background: 'none' }, color: '#18842A' }}>
           {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
         </IconButton>
       </DrawerHeader>
@@ -184,9 +180,7 @@ const Sidebar = ({ open, handleDrawerClose }) => {
         <List>
           {menuData.map((section) => (
             <React.Fragment key={section.label}>
-              <ListItemText sx={{ fontWeight: 'normal', textTransform: 'uppercase' }}>
-                {section.label}
-              </ListItemText>
+              {open && <ListItemText sx={{ fontWeight: 'normal', textTransform: 'uppercase' }}>{section.label}</ListItemText>}
               {renderMenuItems(section.items)}
             </React.Fragment>
           ))}

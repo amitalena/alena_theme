@@ -4,6 +4,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import MainLayout from '../components/layout/MainLayout.jsx';
 
 // routes
+const Home = lazy(() => import('../pages/public/Home.jsx'));
 const Login = lazy(() => import('../pages/public/Login.jsx'));
 const Dashboard = lazy(() => import('../pages/private/dashboard/Dashboard.jsx'));
 const Analytics = lazy(() => import('../pages/private/anality/Analytics.jsx'));
@@ -14,11 +15,15 @@ const NotFound = lazy(() => import('../pages/NotFound.jsx'));
 
 const routes = [
     {
+        path: '/',
+        index: true,
+        element: <Home />,
+    },
+    {
         path: '/dashboard',
         element: <MainLayout />,
         children: [
             {
-                index: true,
                 element: <Dashboard />,
             },
             {

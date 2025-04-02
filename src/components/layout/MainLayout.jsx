@@ -16,8 +16,9 @@ const MainLayout = () => {
             <AdminAppBar handleDrawerToggle={handleDrawerToggle} />
             <Box component={'main'}>
                 <Outlet />
+                <Footer />
             </Box>
-            <Footer />
+
         </>
     );
 };

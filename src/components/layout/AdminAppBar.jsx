@@ -27,18 +27,13 @@ const AppBar = styled(MuiAppBar, {
             style: {
                 marginLeft: drawerWidth,
                 width: `calc(100% - ${drawerWidth}px)`,
-                transition: theme.transitions.create(['width', 'margin'], {
-                    easing: theme.transitions.easing.sharp,
-                    duration: theme.transitions.duration.enteringScreen,
-                }),
             },
         },
     ],
 }));
 
-export default function AdminAppBar() {
+export default function AdminAppBar({ children }) {
     const [open, setOpen] = React.useState(false);
-
     const handleDrawerOpen = () => {
         setOpen((prevOpen) => !prevOpen);
     };
@@ -47,7 +42,7 @@ export default function AdminAppBar() {
         <Box sx={{ display: 'flex' }}>
             <CssBaseline />
             <AppBar sx={{
-                py: 2,
+                py: 1,
                 backgroundImage: "linear-gradient(to left,#87dbaa,#18842A)",
                 backgroundColor: "transparent",
             }} elevation={0} position="fixed" open={open}>
@@ -74,21 +69,21 @@ export default function AdminAppBar() {
                 </Toolbar>
             </AppBar>
             <Sidebar open={open} handleDrawerClose={handleDrawerOpen} />
-            <Box component="main" sx={{ flexGrow: 1, p: 2, height: '100%', backgroundImage: `url(${BG})` }}>
+            <Box
+                component="main"
+                sx={{
+                    flexGrow: 1,
+                    p: 2,
+                    overflowX: 'hidden',
+                    width: open ? `calc(100vw - ${drawerWidth}px)` : "95vw",
+                    height: "92vh",
+                    backgroundImage: `url(${BG})`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                }}
+            >
                 <Toolbar />
-                <Typography variant='h1' sx={{ marginBottom: 2, fontWeight: "bold" }}>
-                    Consequat mauris nunc congue nisi vitae suscipit. Fringilla est ullamcorper
-                    eget nulla facilisi etiam dignissim diam. Pulvinar elementum integer enim
-                    neque volutpat ac tincidunt. Ornare suspendisse sed nisi lacus sed viverra
-                    tellus. Purus sit amet volutpat consequat mauris. Elementum eu facilisis
-                    sed odio morbi. Euismod lacinia at quis risus sed vulputate odio. Morbi
-                    tincidunt ornare massa eget egestas purus viverra accumsan in. In hendrerit
-                    gravida rutrum quisque non tellus orci ac. Pellentesque nec nam aliquam sem
-                    et tortor. Habitant morbi tristique senectus et. Adipiscing elit duis
-                    tristique sollicitudin nibh sit. Ornare aenean euismod elementum nisi quis
-                    eleifend. Commodo viverra maecenas accumsan lacus vel facilisis. Nulla
-                    posuere sollicitudin aliquam ultrices sagittis orci a.
-                </Typography>
+                {children}
             </Box>
         </Box>
     );

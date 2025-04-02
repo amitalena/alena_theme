@@ -364,11 +364,8 @@ const AppTheme = createTheme({
         MuiListItem: {
             styleOverrides: {
                 root: {
-                    backgroundColor: '#f0f0f0',
+                    backgroundColor: '#fff',
                     margin: '10px 0',
-                    '&:hover': {
-                        backgroundColor: '#d0d0d0',
-                    },
                 },
             },
         },

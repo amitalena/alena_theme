@@ -1,8 +1,9 @@
+import { Box, Typography } from '@mui/material'
 import React from 'react'
 
 const Ecommerce = () => {
     return (
-        <div>Ecommerce</div>
+        <Box><Typography textAlign={'center'}>ecommerce</Typography></Box>
     )
 }
 
